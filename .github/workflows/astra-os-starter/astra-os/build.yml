@@ -1,0 +1,65 @@
+name: Build Astra OS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+
+    steps:
+      - name: Checkout do projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar ferramentas de construção
+        shell: sh
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            live-build \
+            debootstrap \
+            cpio \
+            xorriso \
+            squashfs-tools \
+            grub-pc-bin \
+            grub-efi-amd64-bin \
+            mtools \
+            dosfstools \
+            isolinux \
+            syslinux-common \
+            rsync \
+            ca-certificates
+
+      - name: Preparar scripts e configurar a ISO
+        shell: sh
+        run: |
+          chmod +x auto/config
+          chmod +x config/hooks/normal/010-astra-branding.hook.chroot
+          lb config
+
+      - name: Construir Astra OS
+        shell: sh
+        run: |
+          lb build 2>&1 | tee build.log
+          test -s live-image-amd64.hybrid.iso
+
+      - name: Salvar ISO como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: Astra-OS-1.0-ISO
+          path: live-image-amd64.hybrid.iso
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Salvar log se a construção falhar
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Astra-OS-build-log
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7
