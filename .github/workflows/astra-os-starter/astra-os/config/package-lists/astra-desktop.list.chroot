@@ -1,0 +1,21 @@
+# Debian Live boot and runtime
+live-boot
+live-config
+
+# Desktop: Xfce and display manager
+task-xfce-desktop
+
+# Browser and basic user applications
+chromium
+thunar
+xfce4-terminal
+network-manager-gnome
+spice-vdagent
+
+# Basic utilities
+sudo
+curl
+wget
+git
+ca-certificates
+fonts-liberation

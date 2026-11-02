@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+cat > /etc/issue <<'ISSUE'
+Astra OS 1.0
+Astra Cloud Project
+Debian GNU/Linux 13 - amd64
+ISSUE
+
+cat > /etc/motd <<'MOTD'
+================================
+          ASTRA OS 1.0
+================================
+Bem-vindo ao Astra OS!
+Interface: XFCE
+Arquitetura: amd64 (x86_64)
+Base: Debian 13 (Trixie)
+================================
+MOTD
